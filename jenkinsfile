@@ -1,0 +1,39 @@
+pipeline{
+
+environment{
+DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+}
+agent any
+
+stages{
+stage("clean up ")
+{
+steps{
+deleteDir()}}
+  stage("checkout"){
+  steps{
+  git url :'https://github.com/nourchawebi/astonvilla-devops.git' , branch : 'main'
+  }
+  }
+  stage("generate docker image")
+  {
+  steps
+  {
+  sh "docker build -t nourchawebi/astonvilla:1.1.${env.BUILD_NUMBER}  . "
+  }
+  }
+  stage("login")
+  {
+  steps{
+  sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
+  }}
+stage("push")
+{
+steps{
+sh "docker push nourchawebi/astonvilla:1.1.${env.BUILD_NUMBER}"
+}
+}
+
+
+}
+}
