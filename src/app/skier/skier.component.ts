@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { SkierServiceService } from '../skier-service.service';
 
 @Component({
   selector: 'app-skier',
@@ -17,7 +17,10 @@ export class SkierComponent implements OnInit {
   skiersBySubscription: any[] = [];
   subscriptionTypes = ['ANNUAL', 'SEMI_ANNUAL', 'MONTHLY'];
 
-  constructor(private http: HttpClient, private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private skierService: SkierServiceService
+  ) {
     this.skierForm = this.fb.group({
       numSkier: [1, Validators.required],
       firstName: ['', Validators.required],
@@ -34,12 +37,17 @@ export class SkierComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    // If you need to perform any additional initialization, you can do it here
-  }
+  ngOnInit() {}
 
   addSkier() {
-    this.http.post('/skier/add', this.skierForm.value).subscribe(
+    const skierData = { ...this.skierForm.value };
+  
+    // Format dates
+    skierData.dateOfBirth = this.formatDate(skierData.dateOfBirth);
+    skierData.subscription.startDate = this.formatDate(skierData.subscription.startDate);
+    skierData.subscription.endDate = this.formatDate(skierData.subscription.endDate);
+  
+    this.skierService.addSkier(skierData).subscribe(
       response => {
         console.log('Skier added successfully', response);
         this.skierForm.reset();
@@ -47,9 +55,15 @@ export class SkierComponent implements OnInit {
       error => console.error('Error adding skier', error)
     );
   }
+  
+  formatDate(date: string | Date): string {
+    const d = new Date(date);
+    return d.toISOString().split('T')[0]; // Converts to YYYY-MM-DD
+  }
+  
 
   getAllSkiers() {
-    this.http.get<any[]>('/skier/all').subscribe(
+    this.skierService.getAllSkiers().subscribe(
       skiers => this.skiers = skiers,
       error => console.error('Error fetching skiers', error)
     );
@@ -61,14 +75,14 @@ export class SkierComponent implements OnInit {
       console.error('Invalid skier ID');
       return;
     }
-    this.http.get(`/skier/get/${skierId}`).subscribe(
+    this.skierService.getSkierById(skierId).subscribe(
       skier => this.skierById = skier,
       error => console.error('Error fetching skier', error)
     );
   }
 
   getSkiersBySubscription(type: string) {
-    this.http.get<any[]>(`/skier/getSkiersBySubscription?typeSubscription=${type}`).subscribe(
+    this.skierService.getSkiersBySubscription(type).subscribe(
       skiers => this.skiersBySubscription = skiers,
       error => console.error('Error fetching skiers by subscription', error)
     );

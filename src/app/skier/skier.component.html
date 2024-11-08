@@ -1,86 +1,90 @@
 <div class="container">
-    <h2>Skier Management</h2>
-  
-    <form [formGroup]="skierForm" (ngSubmit)="addSkier()">
-      <h3>Add New Skier</h3>
-      <div>
-        <label for="numSkier">Skier Number:</label>
-        <input id="numSkier" type="number" formControlName="numSkier">
-      </div>
-      <div>
-        <label for="firstName">First Name:</label>
-        <input id="firstName" type="text" formControlName="firstName">
-      </div>
-      <div>
-        <label for="lastName">Last Name:</label>
-        <input id="lastName" type="text" formControlName="lastName">
-      </div>
-      <div>
-        <label for="dateOfBirth">Date of Birth:</label>
-        <input id="dateOfBirth" type="date" formControlName="dateOfBirth">
-      </div>
-      <div>
-        <label for="city">City:</label>
-        <input id="city" type="text" formControlName="city">
-      </div>
-  
-      <div formGroupName="subscription">
-        <h4>Subscription Details</h4>
-        <div>
-          <label for="numSub">Subscription Number:</label>
-          <input id="numSub" type="number" formControlName="numSub">
-        </div>
-        <div>
-          <label for="startDate">Start Date:</label>
-          <input id="startDate" type="date" formControlName="startDate">
-        </div>
-        <div>
-          <label for="endDate">End Date:</label>
-          <input id="endDate" type="date" formControlName="endDate">
-        </div>
-        <div>
-          <label for="price">Price:</label>
-          <input id="price" type="number" formControlName="price">
-        </div>
-        <div>
-          <label for="typeSub">Subscription Type:</label>
-          <select id="typeSub" formControlName="typeSub">
-            <option value="">Select type</option>
-            <option *ngFor="let type of subscriptionTypes" [value]="type">{{type}}</option>
-          </select>
-        </div>
-      </div>
-  
-      <button type="submit" [disabled]="!skierForm.valid">Add Skier</button>
-    </form>
-  
+  <h2>Skier Management</h2>
+
+  <!-- Form to Add New Skier -->
+  <form [formGroup]="skierForm" (ngSubmit)="addSkier()">
+    <h3>Add New Skier</h3>
     <div>
-      <h3>Get All Skiers</h3>
-      <button (click)="getAllSkiers()">Fetch All Skiers</button>
-      <ul>
-        <li *ngFor="let skier of skiers">{{skier.firstName}} {{skier.lastName}}</li>
-      </ul>
+      <label for="numSkier">Skier Number:</label>
+      <input id="numSkier" type="number" formControlName="numSkier">
     </div>
-  
     <div>
-      <h3>Get Skier by ID</h3>
-      <input #skierId type="number" placeholder="Enter Skier ID">
-      <button (click)="getSkierById(skierId.value)">Fetch Skier</button>
-      <div *ngIf="skierById">
-        <p>Name: {{skierById.firstName}} {{skierById.lastName}}</p>
-        <p>City: {{skierById.city}}</p>
+      <label for="firstName">First Name:</label>
+      <input id="firstName" type="text" formControlName="firstName">
+    </div>
+    <div>
+      <label for="lastName">Last Name:</label>
+      <input id="lastName" type="text" formControlName="lastName">
+    </div>
+    <div>
+      <label for="dateOfBirth">Date of Birth:</label>
+      <input id="dateOfBirth" type="date" formControlName="dateOfBirth">
+    </div>
+    <div>
+      <label for="city">City:</label>
+      <input id="city" type="text" formControlName="city">
+    </div>
+
+    <div formGroupName="subscription">
+      <h4>Subscription Details</h4>
+      <div>
+        <label for="numSub">Subscription Number:</label>
+        <input id="numSub" type="number" formControlName="numSub">
+      </div>
+      <div>
+        <label for="startDate">Start Date:</label>
+        <input id="startDate" type="date" formControlName="startDate">
+      </div>
+      <div>
+        <label for="endDate">End Date:</label>
+        <input id="endDate" type="date" formControlName="endDate">
+      </div>
+      <div>
+        <label for="price">Price:</label>
+        <input id="price" type="number" formControlName="price">
+      </div>
+      <div>
+        <label for="typeSub">Subscription Type:</label>
+        <select id="typeSub" formControlName="typeSub">
+          <option value="">Select type</option>
+          <option *ngFor="let type of subscriptionTypes" [value]="type">{{type}}</option>
+        </select>
       </div>
     </div>
-  
-    <div>
-      <h3>Get Skiers by Subscription Type</h3>
-      <select #subType>
-        <option value="">Select type</option>
-        <option *ngFor="let type of subscriptionTypes" [value]="type">{{type}}</option>
-      </select>
-      <button (click)="getSkiersBySubscription(subType.value)">Fetch Skiers</button>
-      <ul>
-        <li *ngFor="let skier of skiersBySubscription">{{skier.firstName}} {{skier.lastName}}</li>
-      </ul>
+
+    <button type="submit" [disabled]="!skierForm.valid">Add Skier</button>
+  </form>
+
+  <!-- Get All Skiers Section -->
+  <div>
+    <h3>Get All Skiers</h3>
+    <button (click)="getAllSkiers()">Fetch All Skiers</button>
+    <ul>
+      <li *ngFor="let skier of skiers">{{skier.firstName}} {{skier.lastName}}</li>
+    </ul>
+  </div>
+
+  <!-- Get Skier by ID Section -->
+  <div>
+    <h3>Get Skier by ID</h3>
+    <input #skierId type="number" placeholder="Enter Skier ID">
+    <button (click)="getSkierById(skierId.value)">Fetch Skier</button>
+    <div *ngIf="skierById">
+      <p>Name: {{skierById.firstName}} {{skierById.lastName}}</p>
+      <p>City: {{skierById.city}}</p>
     </div>
   </div>
+
+  <!-- Get Skiers by Subscription Type Section -->
+  <div>
+    <h3>Get Skiers by Subscription Type</h3>
+    <select #subType>
+      <option value="">Select type</option>
+      <option *ngFor="let type of subscriptionTypes" [value]="type">{{type}}</option>
+    </select>
+    <button (click)="getSkiersBySubscription(subType.value)">Fetch Skiers</button>
+    <ul>
+      <li *ngFor="let skier of skiersBySubscription">{{skier.firstName}} {{skier.lastName}}</li>
+    </ul>
+  </div>
+</div>
