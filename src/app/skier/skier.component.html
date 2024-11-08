@@ -1,90 +1,117 @@
 <div class="container">
-  <h2>Skier Management</h2>
+  <h1 class="main-title">Skier Management System</h1>
 
-  <!-- Form to Add New Skier -->
-  <form [formGroup]="skierForm" (ngSubmit)="addSkier()">
-    <h3>Add New Skier</h3>
-    <div>
-      <label for="numSkier">Skier Number:</label>
-      <input id="numSkier" type="number" formControlName="numSkier">
-    </div>
-    <div>
-      <label for="firstName">First Name:</label>
-      <input id="firstName" type="text" formControlName="firstName">
-    </div>
-    <div>
-      <label for="lastName">Last Name:</label>
-      <input id="lastName" type="text" formControlName="lastName">
-    </div>
-    <div>
-      <label for="dateOfBirth">Date of Birth:</label>
-      <input id="dateOfBirth" type="date" formControlName="dateOfBirth">
-    </div>
-    <div>
-      <label for="city">City:</label>
-      <input id="city" type="text" formControlName="city">
+  <nav class="tab-navigation">
+    <button [class.active]="activeTab === 'add'" (click)="setActiveTab('add')">Add Skier</button>
+    <button [class.active]="activeTab === 'list'" (click)="setActiveTab('list')">All Skiers</button>
+    <button [class.active]="activeTab === 'search'" (click)="setActiveTab('search')">Search</button>
+  </nav>
+
+  <div [ngSwitch]="activeTab">
+    <div *ngSwitchCase="'add'">
+      <form [formGroup]="skierForm" (ngSubmit)="addSkier()" class="skier-form">
+        <h2>Add New Skier</h2>
+        <div class="form-group">
+          <label for="numSkier">Skier Number:</label>
+          <input id="numSkier" type="number" formControlName="numSkier">
+        </div>
+        <div class="form-group">
+          <label for="firstName">First Name:</label>
+          <input id="firstName" type="text" formControlName="firstName">
+        </div>
+        <div class="form-group">
+          <label for="lastName">Last Name:</label>
+          <input id="lastName" type="text" formControlName="lastName">
+        </div>
+        <div class="form-group">
+          <label for="dateOfBirth">Date of Birth:</label>
+          <input id="dateOfBirth" type="date" formControlName="dateOfBirth">
+        </div>
+        <div class="form-group">
+          <label for="city">City:</label>
+          <input id="city" type="text" formControlName="city">
+        </div>
+
+        <div formGroupName="subscription" class="subscription-form">
+          <h3>Subscription Details</h3>
+          <div class="form-group">
+            <label for="numSub">Subscription Number:</label>
+            <input id="numSub" type="number" formControlName="numSub">
+          </div>
+          <div class="form-group">
+            <label for="startDate">Start Date:</label>
+            <input id="startDate" type="date" formControlName="startDate">
+          </div>
+          <div class="form-group">
+            <label for="endDate">End Date:</label>
+            <input id="endDate" type="date" formControlName="endDate">
+          </div>
+          <div class="form-group">
+            <label for="price">Price:</label>
+            <input id="price" type="number" formControlName="price">
+          </div>
+          <div class="form-group">
+            <label for="typeSub">Subscription Type:</label>
+            <select id="typeSub" formControlName="typeSub">
+              <option value="">Select type</option>
+              <option *ngFor="let type of subscriptionTypes" [value]="type">{{type}}</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" [disabled]="!skierForm.valid" class="submit-btn">Add Skier</button>
+      </form>
     </div>
 
-    <div formGroupName="subscription">
-      <h4>Subscription Details</h4>
-      <div>
-        <label for="numSub">Subscription Number:</label>
-        <input id="numSub" type="number" formControlName="numSub">
+    <div *ngSwitchCase="'list'" class="skiers-list">
+      <h2>All Skiers</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>City</th>
+            <th>Subscription Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let skier of skiers">
+            <td>{{skier.firstName}} {{skier.lastName}}</td>
+            <td>{{skier.city}}</td>
+            <td>{{skier.subscription.typeSub}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngSwitchCase="'search'" class="search-section">
+      <h2>Search Skiers</h2>
+      <div class="search-by-id">
+        <h3>Get Skier by ID</h3>
+        <div class="search-form">
+          <input #skierId type="number" placeholder="Enter Skier ID">
+          <button (click)="getSkierById(skierId.value)" class="search-btn">Search</button>
+        </div>
+        <div *ngIf="skierById" class="search-result">
+          <h4>Skier Details</h4>
+          <p><strong>Name:</strong> {{skierById.firstName}} {{skierById.lastName}}</p>
+          <p><strong>City:</strong> {{skierById.city}}</p>
+          <p><strong>Subscription:</strong> {{skierById.subscription.typeSub}}</p>
+        </div>
       </div>
-      <div>
-        <label for="startDate">Start Date:</label>
-        <input id="startDate" type="date" formControlName="startDate">
-      </div>
-      <div>
-        <label for="endDate">End Date:</label>
-        <input id="endDate" type="date" formControlName="endDate">
-      </div>
-      <div>
-        <label for="price">Price:</label>
-        <input id="price" type="number" formControlName="price">
-      </div>
-      <div>
-        <label for="typeSub">Subscription Type:</label>
-        <select id="typeSub" formControlName="typeSub">
-          <option value="">Select type</option>
-          <option *ngFor="let type of subscriptionTypes" [value]="type">{{type}}</option>
-        </select>
+
+      <div class="search-by-subscription">
+        <h3>Get Skiers by Subscription Type</h3>
+        <div class="search-form">
+          <select #subType>
+            <option value="">Select type</option>
+            <option *ngFor="let type of subscriptionTypes" [value]="type">{{type}}</option>
+          </select>
+          <button (click)="getSkiersBySubscription(subType.value)" class="search-btn">Search</button>
+        </div>
+        <ul *ngIf="skiersBySubscription.length > 0" class="search-result">
+          <li *ngFor="let skier of skiersBySubscription">{{skier.firstName}} {{skier.lastName}} - {{skier.city}}</li>
+        </ul>
       </div>
     </div>
-
-    <button type="submit" [disabled]="!skierForm.valid">Add Skier</button>
-  </form>
-
-  <!-- Get All Skiers Section -->
-  <div>
-    <h3>Get All Skiers</h3>
-    <button (click)="getAllSkiers()">Fetch All Skiers</button>
-    <ul>
-      <li *ngFor="let skier of skiers">{{skier.firstName}} {{skier.lastName}}</li>
-    </ul>
-  </div>
-
-  <!-- Get Skier by ID Section -->
-  <div>
-    <h3>Get Skier by ID</h3>
-    <input #skierId type="number" placeholder="Enter Skier ID">
-    <button (click)="getSkierById(skierId.value)">Fetch Skier</button>
-    <div *ngIf="skierById">
-      <p>Name: {{skierById.firstName}} {{skierById.lastName}}</p>
-      <p>City: {{skierById.city}}</p>
-    </div>
-  </div>
-
-  <!-- Get Skiers by Subscription Type Section -->
-  <div>
-    <h3>Get Skiers by Subscription Type</h3>
-    <select #subType>
-      <option value="">Select type</option>
-      <option *ngFor="let type of subscriptionTypes" [value]="type">{{type}}</option>
-    </select>
-    <button (click)="getSkiersBySubscription(subType.value)">Fetch Skiers</button>
-    <ul>
-      <li *ngFor="let skier of skiersBySubscription">{{skier.firstName}} {{skier.lastName}}</li>
-    </ul>
   </div>
 </div>

@@ -1,38 +1,119 @@
 .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  
-  form div {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  button {
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  
-  button:disabled {
-    background-color: #cccccc;
-  }
-  
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  li {
-    margin-bottom: 5px;
-  }
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.main-title {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 30px;
+}
+
+.tab-navigation {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.tab-navigation button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 0 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.tab-navigation button.active {
+  background-color: #2980b9;
+}
+
+.skier-form, .search-section {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #2c3e50;
+}
+
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #bdc3c7;
+  border-radius: 3px;
+}
+
+.subscription-form {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #ecf0f1;
+}
+
+.submit-btn, .search-btn {
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submit-btn:hover, .search-btn:hover {
+  background-color: #27ae60;
+}
+
+.submit-btn:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
+.skiers-list table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.skiers-list th, .skiers-list td {
+  padding: 10px;
+  border: 1px solid #ecf0f1;
+  text-align: left;
+}
+
+.skiers-list th {
+  background-color: #3498db;
+  color: white;
+}
+
+.search-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search-result {
+  background-color: #ecf0f1;
+  padding: 15px;
+  border-radius: 3px;
+  margin-top: 20px;
+}
+
+.search-result h4 {
+  margin-top: 0;
+  color: #2c3e50;
+}
+
+.search-by-id, .search-by-subscription {
+  margin-bottom: 30px;
+}

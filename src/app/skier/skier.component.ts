@@ -16,6 +16,7 @@ export class SkierComponent implements OnInit {
   skierById: any;
   skiersBySubscription: any[] = [];
   subscriptionTypes = ['ANNUAL', 'SEMI_ANNUAL', 'MONTHLY'];
+  activeTab: 'add' | 'list' | 'search' = 'add';
 
   constructor(
     private fb: FormBuilder,
@@ -37,30 +38,33 @@ export class SkierComponent implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getAllSkiers();
+  }
 
   addSkier() {
-    const skierData = { ...this.skierForm.value };
-  
-    // Format dates
-    skierData.dateOfBirth = this.formatDate(skierData.dateOfBirth);
-    skierData.subscription.startDate = this.formatDate(skierData.subscription.startDate);
-    skierData.subscription.endDate = this.formatDate(skierData.subscription.endDate);
-  
-    this.skierService.addSkier(skierData).subscribe(
-      response => {
-        console.log('Skier added successfully', response);
-        this.skierForm.reset();
-      },
-      error => console.error('Error adding skier', error)
-    );
+    if (this.skierForm.valid) {
+      const skierData = { ...this.skierForm.value };
+      skierData.dateOfBirth = this.formatDate(skierData.dateOfBirth);
+      skierData.subscription.startDate = this.formatDate(skierData.subscription.startDate);
+      skierData.subscription.endDate = this.formatDate(skierData.subscription.endDate);
+
+      this.skierService.addSkier(skierData).subscribe(
+        response => {
+          console.log('Skier added successfully', response);
+          this.skierForm.reset();
+          this.getAllSkiers();
+          this.activeTab = 'list';
+        },
+        error => console.error('Error adding skier', error)
+      );
+    }
   }
-  
+
   formatDate(date: string | Date): string {
     const d = new Date(date);
-    return d.toISOString().split('T')[0]; // Converts to YYYY-MM-DD
+    return d.toISOString().split('T')[0];
   }
-  
 
   getAllSkiers() {
     this.skierService.getAllSkiers().subscribe(
@@ -86,5 +90,12 @@ export class SkierComponent implements OnInit {
       skiers => this.skiersBySubscription = skiers,
       error => console.error('Error fetching skiers by subscription', error)
     );
+  }
+
+  setActiveTab(tab: 'add' | 'list' | 'search') {
+    this.activeTab = tab;
+    if (tab === 'list') {
+      this.getAllSkiers();
+    }
   }
 }
