@@ -2,13 +2,26 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { SkierServiceService } from '../skier-service.service';
+import { trigger, transition, style, animate } from '@angular/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @Component({
   selector: 'app-skier',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [BrowserAnimationsModule,CommonModule, ReactiveFormsModule],
   templateUrl: './skier.component.html',
-  styleUrls: ['./skier.component.css']
+  styleUrls: ['./skier.component.css'],
+  animations: [
+    trigger('fadeSlideInOut', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(10px)' }),
+        animate('300ms', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+      transition(':leave', [
+        animate('300ms', style({ opacity: 0, transform: 'translateY(10px)' })),
+      ]),
+    ]),
+  ],
 })
 export class SkierComponent implements OnInit {
   skierForm: FormGroup;
@@ -17,6 +30,7 @@ export class SkierComponent implements OnInit {
   skiersBySubscription: any[] = [];
   subscriptionTypes = ['ANNUAL', 'SEMI_ANNUAL', 'MONTHLY'];
   activeTab: 'add' | 'list' | 'search' = 'add';
+  loading = false;
 
   constructor(
     private fb: FormBuilder,
@@ -44,6 +58,7 @@ export class SkierComponent implements OnInit {
 
   addSkier() {
     if (this.skierForm.valid) {
+      this.loading = true;
       const skierData = { ...this.skierForm.value };
       skierData.dateOfBirth = this.formatDate(skierData.dateOfBirth);
       skierData.subscription.startDate = this.formatDate(skierData.subscription.startDate);
@@ -55,8 +70,12 @@ export class SkierComponent implements OnInit {
           this.skierForm.reset();
           this.getAllSkiers();
           this.activeTab = 'list';
+          this.loading = false;
         },
-        error => console.error('Error adding skier', error)
+        error => {
+          console.error('Error adding skier', error);
+          this.loading = false;
+        }
       );
     }
   }
@@ -67,9 +86,16 @@ export class SkierComponent implements OnInit {
   }
 
   getAllSkiers() {
+    this.loading = true;
     this.skierService.getAllSkiers().subscribe(
-      skiers => this.skiers = skiers,
-      error => console.error('Error fetching skiers', error)
+      skiers => {
+        this.skiers = skiers;
+        this.loading = false;
+      },
+      error => {
+        console.error('Error fetching skiers', error);
+        this.loading = false;
+      }
     );
   }
 
@@ -79,16 +105,30 @@ export class SkierComponent implements OnInit {
       console.error('Invalid skier ID');
       return;
     }
+    this.loading = true;
     this.skierService.getSkierById(skierId).subscribe(
-      skier => this.skierById = skier,
-      error => console.error('Error fetching skier', error)
+      skier => {
+        this.skierById = skier;
+        this.loading = false;
+      },
+      error => {
+        console.error('Error fetching skier', error);
+        this.loading = false;
+      }
     );
   }
 
   getSkiersBySubscription(type: string) {
+    this.loading = true;
     this.skierService.getSkiersBySubscription(type).subscribe(
-      skiers => this.skiersBySubscription = skiers,
-      error => console.error('Error fetching skiers by subscription', error)
+      skiers => {
+        this.skiersBySubscription = skiers;
+        this.loading = false;
+      },
+      error => {
+        console.error('Error fetching skiers by subscription', error);
+        this.loading = false;
+      }
     );
   }
 

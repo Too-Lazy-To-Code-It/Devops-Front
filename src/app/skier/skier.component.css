@@ -1,99 +1,154 @@
-.container {
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
+
+:root {
+  --primary-color: #3498db;
+  --secondary-color: #2ecc71;
+  --background-color: #f0f3f5;
+  --card-background: #ffffff;
+  --text-color: #2c3e50;
+  --border-radius: 8px;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+.skier-management {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  font-family: Arial, sans-serif;
 }
 
-.main-title {
-  text-align: center;
-  color: #2c3e50;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 30px;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--primary-color);
 }
 
 .tab-navigation {
   display: flex;
-  justify-content: center;
-  margin-bottom: 30px;
+  gap: 10px;
 }
 
 .tab-navigation button {
-  background-color: #3498db;
-  color: white;
+  background-color: var(--card-background);
+  color: var(--text-color);
   border: none;
   padding: 10px 20px;
-  margin: 0 5px;
+  border-radius: var(--border-radius);
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
+.tab-navigation button:hover,
 .tab-navigation button.active {
-  background-color: #2980b9;
+  background-color: var(--primary-color);
+  color: white;
 }
 
-.skier-form, .search-section {
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+.content {
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 30px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
 }
 
 .form-group {
-  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
 }
 
 .form-group label {
-  display: block;
   margin-bottom: 5px;
-  color: #2c3e50;
+  font-weight: 600;
 }
 
-.form-group input, .form-group select {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #bdc3c7;
-  border-radius: 3px;
+.form-group input,
+.form-group select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  transition: var(--transition);
 }
 
-.subscription-form {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid #ecf0f1;
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }
 
-.submit-btn, .search-btn {
-  background-color: #2ecc71;
+.submit-btn,
+.search-btn {
+  background-color: var(--secondary-color);
   color: white;
   border: none;
   padding: 10px 20px;
+  border-radius: var(--border-radius);
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: var(--transition);
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
-.submit-btn:hover, .search-btn:hover {
+.submit-btn:hover,
+.search-btn:hover {
   background-color: #27ae60;
 }
 
-.submit-btn:disabled {
+.submit-btn:disabled,
+.search-btn:disabled {
   background-color: #95a5a6;
   cursor: not-allowed;
 }
 
-.skiers-list table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
 }
 
-.skiers-list th, .skiers-list td {
-  padding: 10px;
-  border: 1px solid #ecf0f1;
-  text-align: left;
+.skier-card {
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 20px;
+  transition: var(--transition);
 }
 
-.skiers-list th {
-  background-color: #3498db;
-  color: white;
+.skier-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.skier-card h3 {
+  margin-top: 0;
+  color: var(--primary-color);
 }
 
 .search-form {
@@ -102,18 +157,53 @@
   margin-bottom: 20px;
 }
 
-.search-result {
-  background-color: #ecf0f1;
-  padding: 15px;
-  border-radius: 3px;
-  margin-top: 20px;
+.search-form input,
+.search-form select {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
 }
 
-.search-result h4 {
-  margin-top: 0;
-  color: #2c3e50;
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
-.search-by-id, .search-by-subscription {
-  margin-bottom: 30px;
+.loader {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid var(--primary-color);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tab-navigation {
+    margin-top: 20px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
 }

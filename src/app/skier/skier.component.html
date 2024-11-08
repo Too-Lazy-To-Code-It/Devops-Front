@@ -1,117 +1,139 @@
-<div class="container">
-  <h1 class="main-title">Skier Management System</h1>
+<div class="skier-management">
+  <header class="header">
+    <h1 class="title">Skier Management System</h1>
+    <nav class="tab-navigation">
+      <button [class.active]="activeTab === 'add'" (click)="setActiveTab('add')" aria-label="Add Skier">
+        <i class="fas fa-user-plus"></i>
+        <span>Add</span>
+      </button>
+      <button [class.active]="activeTab === 'list'" (click)="setActiveTab('list')" aria-label="List Skiers">
+        <i class="fas fa-list"></i>
+        <span>List</span>
+      </button>
+      <button [class.active]="activeTab === 'search'" (click)="setActiveTab('search')" aria-label="Search Skiers">
+        <i class="fas fa-search"></i>
+        <span>Search</span>
+      </button>
+    </nav>
+  </header>
 
-  <nav class="tab-navigation">
-    <button [class.active]="activeTab === 'add'" (click)="setActiveTab('add')">Add Skier</button>
-    <button [class.active]="activeTab === 'list'" (click)="setActiveTab('list')">All Skiers</button>
-    <button [class.active]="activeTab === 'search'" (click)="setActiveTab('search')">Search</button>
-  </nav>
+  <main class="content" [@fadeSlideInOut]>
+    <div [ngSwitch]="activeTab">
+      <section *ngSwitchCase="'add'" class="add-skier">
+        <form [formGroup]="skierForm" (ngSubmit)="addSkier()" class="skier-form">
+          <h2>Add New Skier</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="numSkier">Skier Number</label>
+              <input id="numSkier" type="number" formControlName="numSkier">
+            </div>
+            <div class="form-group">
+              <label for="firstName">First Name</label>
+              <input id="firstName" type="text" formControlName="firstName">
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name</label>
+              <input id="lastName" type="text" formControlName="lastName">
+            </div>
+            <div class="form-group">
+              <label for="dateOfBirth">Date of Birth</label>
+              <input id="dateOfBirth" type="date" formControlName="dateOfBirth">
+            </div>
+            <div class="form-group">
+              <label for="city">City</label>
+              <input id="city" type="text" formControlName="city">
+            </div>
+          </div>
 
-  <div [ngSwitch]="activeTab">
-    <div *ngSwitchCase="'add'">
-      <form [formGroup]="skierForm" (ngSubmit)="addSkier()" class="skier-form">
-        <h2>Add New Skier</h2>
-        <div class="form-group">
-          <label for="numSkier">Skier Number:</label>
-          <input id="numSkier" type="number" formControlName="numSkier">
+          <div formGroupName="subscription" class="subscription-form">
+            <h3>Subscription Details</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="numSub">Subscription Number</label>
+                <input id="numSub" type="number" formControlName="numSub">
+              </div>
+              <div class="form-group">
+                <label for="startDate">Start Date</label>
+                <input id="startDate" type="date" formControlName="startDate">
+              </div>
+              <div class="form-group">
+                <label for="endDate">End Date</label>
+                <input id="endDate" type="date" formControlName="endDate">
+              </div>
+              <div class="form-group">
+                <label for="price">Price</label>
+                <input id="price" type="number" formControlName="price">
+              </div>
+              <div class="form-group">
+                <label for="typeSub">Subscription Type</label>
+                <select id="typeSub" formControlName="typeSub">
+                  <option value="">Select type</option>
+                  <option *ngFor="let type of subscriptionTypes" [value]="type">{{type}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" [disabled]="!skierForm.valid || loading" class="submit-btn">
+            <i class="fas fa-save"></i> Add Skier
+          </button>
+        </form>
+      </section>
+
+      <section *ngSwitchCase="'list'" class="skiers-list">
+        <h2>All Skiers</h2>
+        <div class="card-grid">
+          <div *ngFor="let skier of skiers" class="skier-card" [@fadeSlideInOut]>
+            <h3>{{skier.firstName}} {{skier.lastName}}</h3>
+            <p><i class="fas fa-map-marker-alt"></i> {{skier.city}}</p>
+            <p><i class="fas fa-calendar-alt"></i> {{skier.dateOfBirth | date}}</p>
+            <p><i class="fas fa-skiing"></i> {{skier.subscription.typeSub}}</p>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="firstName">First Name:</label>
-          <input id="firstName" type="text" formControlName="firstName">
-        </div>
-        <div class="form-group">
-          <label for="lastName">Last Name:</label>
-          <input id="lastName" type="text" formControlName="lastName">
-        </div>
-        <div class="form-group">
-          <label for="dateOfBirth">Date of Birth:</label>
-          <input id="dateOfBirth" type="date" formControlName="dateOfBirth">
-        </div>
-        <div class="form-group">
-          <label for="city">City:</label>
-          <input id="city" type="text" formControlName="city">
+      </section>
+
+      <section *ngSwitchCase="'search'" class="search-section">
+        <div class="search-by-id">
+          <h2>Get Skier by ID</h2>
+          <div class="search-form">
+            <input #skierId type="number" placeholder="Enter Skier ID">
+            <button (click)="getSkierById(skierId.value)" [disabled]="loading" class="search-btn">
+              <i class="fas fa-search"></i> Search
+            </button>
+          </div>
+          <div *ngIf="skierById" class="search-result" [@fadeSlideInOut]>
+            <h3>{{skierById.firstName}} {{skierById.lastName}}</h3>
+            <p><i class="fas fa-map-marker-alt"></i> {{skierById.city}}</p>
+            <p><i class="fas fa-calendar-alt"></i> {{skierById.dateOfBirth | date}}</p>
+            <p><i class="fas fa-skiing"></i> {{skierById.subscription.typeSub}}</p>
+          </div>
         </div>
 
-        <div formGroupName="subscription" class="subscription-form">
-          <h3>Subscription Details</h3>
-          <div class="form-group">
-            <label for="numSub">Subscription Number:</label>
-            <input id="numSub" type="number" formControlName="numSub">
-          </div>
-          <div class="form-group">
-            <label for="startDate">Start Date:</label>
-            <input id="startDate" type="date" formControlName="startDate">
-          </div>
-          <div class="form-group">
-            <label for="endDate">End Date:</label>
-            <input id="endDate" type="date" formControlName="endDate">
-          </div>
-          <div class="form-group">
-            <label for="price">Price:</label>
-            <input id="price" type="number" formControlName="price">
-          </div>
-          <div class="form-group">
-            <label for="typeSub">Subscription Type:</label>
-            <select id="typeSub" formControlName="typeSub">
+        <div class="search-by-subscription">
+          <h2>Get Skiers by Subscription Type</h2>
+          <div class="search-form">
+            <select #subType>
               <option value="">Select type</option>
               <option *ngFor="let type of subscriptionTypes" [value]="type">{{type}}</option>
             </select>
+            <button (click)="getSkiersBySubscription(subType.value)" [disabled]="loading" class="search-btn">
+              <i class="fas fa-search"></i> Search
+            </button>
+          </div>
+          <div class="card-grid">
+            <div *ngFor="let skier of skiersBySubscription" class="skier-card" [@fadeSlideInOut]>
+              <h3>{{skier.firstName}} {{skier.lastName}}</h3>
+              <p><i class="fas fa-map-marker-alt"></i> {{skier.city}}</p>
+              <p><i class="fas fa-calendar-alt"></i> {{skier.dateOfBirth | date}}</p>
+              <p><i class="fas fa-skiing"></i> {{skier.subscription.typeSub}}</p>
+            </div>
           </div>
         </div>
-
-        <button type="submit" [disabled]="!skierForm.valid" class="submit-btn">Add Skier</button>
-      </form>
+      </section>
     </div>
+  </main>
 
-    <div *ngSwitchCase="'list'" class="skiers-list">
-      <h2>All Skiers</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>City</th>
-            <th>Subscription Type</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let skier of skiers">
-            <td>{{skier.firstName}} {{skier.lastName}}</td>
-            <td>{{skier.city}}</td>
-            <td>{{skier.subscription.typeSub}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div *ngSwitchCase="'search'" class="search-section">
-      <h2>Search Skiers</h2>
-      <div class="search-by-id">
-        <h3>Get Skier by ID</h3>
-        <div class="search-form">
-          <input #skierId type="number" placeholder="Enter Skier ID">
-          <button (click)="getSkierById(skierId.value)" class="search-btn">Search</button>
-        </div>
-        <div *ngIf="skierById" class="search-result">
-          <h4>Skier Details</h4>
-          <p><strong>Name:</strong> {{skierById.firstName}} {{skierById.lastName}}</p>
-          <p><strong>City:</strong> {{skierById.city}}</p>
-          <p><strong>Subscription:</strong> {{skierById.subscription.typeSub}}</p>
-        </div>
-      </div>
-
-      <div class="search-by-subscription">
-        <h3>Get Skiers by Subscription Type</h3>
-        <div class="search-form">
-          <select #subType>
-            <option value="">Select type</option>
-            <option *ngFor="let type of subscriptionTypes" [value]="type">{{type}}</option>
-          </select>
-          <button (click)="getSkiersBySubscription(subType.value)" class="search-btn">Search</button>
-        </div>
-        <ul *ngIf="skiersBySubscription.length > 0" class="search-result">
-          <li *ngFor="let skier of skiersBySubscription">{{skier.firstName}} {{skier.lastName}} - {{skier.city}}</li>
-        </ul>
-      </div>
-    </div>
+  <div *ngIf="loading" class="loading-overlay">
+    <div class="loader"></div>
   </div>
 </div>
